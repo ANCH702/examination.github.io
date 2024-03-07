@@ -1,0 +1,252 @@
+Program 1
+using System;
+
+class Calculator
+{
+    static void Main()
+    {
+        Console.WriteLine("Simple Arithmetic Calculator");
+        Console.Write("Enter the first number: ");
+        double num1 = Convert.ToDouble(Console.ReadLine());
+
+        Console.Write("Enter the operator (+, -, *, /, %): ");
+        char op = Convert.ToChar(Console.ReadLine());
+
+        Console.Write("Enter the second number: ");
+        double num2 = Convert.ToDouble(Console.ReadLine());
+
+        double result = 0;
+
+        switch (op)
+        {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                if (num2 != 0)
+                    result = num1 / num2;
+                else
+                    Console.WriteLine("Error: Division by zero");
+                break;
+            case '%':
+                if (num2 != 0)
+                    result = num1 % num2;
+                else
+                    Console.WriteLine("Error: Modulo by zero");
+                break;
+            default:
+                Console.WriteLine("Invalid operator");
+                break;
+        }
+
+        Console.WriteLine($"Result: {result}");
+    }
+}
+
+program 2
+using System;
+
+class ArmstrongNumbers
+{
+    static void Main()
+    {
+        Console.WriteLine("Armstrong Numbers between 1 and 1000:");
+
+        for (int num = 1; num <= 1000; num++)
+        {
+            if (IsArmstrongNumber(num))
+            {
+                Console.WriteLine(num);
+            }
+        }
+    }
+
+    static bool IsArmstrongNumber(int number)
+    {
+        int originalNumber = number;
+        int n = CountDigits(number);
+        int sum = 0;
+
+        while (number > 0)
+        {
+            int digit = number % 10;
+            sum += (int)Math.Pow(digit, n);
+            number /= 10;
+        }
+
+        return sum == originalNumber;
+    }
+
+    static int CountDigits(int number)
+    {
+        int count = 0;
+
+        while (number > 0)
+        {
+            count++;
+            number /= 10;
+        }
+
+        return count;
+  }
+}
+
+program 3
+  using System;
+
+class SubstringList
+{
+    static void Main()
+    {
+        Console.Write("Enter a string: ");
+        string input = Console.ReadLine();
+
+        Console.WriteLine("List of all substrings:");
+        ListAllSubstrings(input);
+    }
+
+    static void ListAllSubstrings(string str)
+    {
+        for (int i = 0; i < str.Length; i++)
+        {
+            for (int j = 1; j <= str.Length - i; j++)
+            {
+                string substring = str.Substring(i, j);
+                Console.WriteLine(substring);
+            }
+}
+}
+}
+
+program 4
+  using System;
+
+class ExceptionDemo
+{
+    static void Main()
+    {
+        try
+        {
+            int numerator = 10;
+            int denominator = 0;
+            int result = numerator / denominator; 
+        }
+        catch (DivideByZeroException ex)
+        {
+            Console.WriteLine("Division by Zero Exception: " + ex.Message);
+        }
+        try
+        {
+            int[] numbers = { 1, 2, 3, 4, 5 };
+            int indexOutOfRange = numbers[10]; 
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            Console.WriteLine("Index Out of Range Exception: " + ex.Message);
+}
+}
+}
+
+program 5
+  using System;
+
+class PascalTriangle
+{
+    static void Main()
+    {
+        Console.WriteLine("Pascal's Triangle");
+
+        // Read the number of rows from the user
+        Console.Write("Enter the number of rows: ");
+        int numRows = int.Parse(Console.ReadLine());
+
+        // Generate and print Pascal's Triangle
+        int[,] triangle = GeneratePascalsTriangle(numRows);
+
+        Console.WriteLine("\nPascal's Triangle:");
+
+        for (int i = 0; i < numRows; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                Console.Write(triangle[i, j] + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+
+    static int[,] GeneratePascalsTriangle(int numRows)
+    {
+        int[,] triangle = new int[numRows, numRows];
+
+        for (int i = 0; i < numRows; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                if (j == 0 || j == i)
+                {
+                    triangle[i, j] = 1;
+                }
+                else
+                {
+                    triangle[i, j] = triangle[i - 1, j - 1] + triangle[i - 1, j];
+                }
+            }
+        }
+
+        return triangle;
+}
+}
+
+program 6
+  using System;
+
+class FloydsTriangle
+{
+    static void Main()
+    {
+        Console.WriteLine("Floyd's Triangle");
+
+        // Read the number of rows from the user
+        Console.Write("Enter the number of rows: ");
+        int numRows = int.Parse(Console.ReadLine());
+
+        // Generate and print Floyd's Triangle
+        int[][] triangle = GenerateFloydsTriangle(numRows);
+
+        Console.WriteLine("\nFloyd's Triangle:");
+
+        for (int i = 0; i < numRows; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                Console.Write(triangle[i][j] + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+
+    static int[][] GenerateFloydsTriangle(int numRows)
+    {
+        int[][] triangle = new int[numRows][];
+
+        int count = 1;
+        for (int i = 0; i < numRows; i++)
+        {
+            triangle[i] = new int[i + 1];
+            for (int j = 0; j <= i; j++)
+            {
+                triangle[i][j] = count;
+                count++;
+            }
+        }
+
+        return triangle;
+}
+}
