@@ -1,0 +1,120 @@
+CREATE TABLE salesman(
+    Salesman_ID INT PRIMARY KEY,
+    Name CHAR(20) NOT NULL,
+    City CHAR(10),
+    Commission DECIMAL(10, 2)
+);
+
+INSERT INTO salesman VALUES
+(5000, 'James Bond', 'Bangalore', 0.17),
+(5001, 'Adithi Sharma', 'Bangalore', 0.15),
+(5002, 'Adithya Sharma', 'Puttur', 0.13),
+(5003, 'Mukesh Ambani', '', 0.12),
+(5005, 'Akash Sharma', 'Ladakh', 0.11),
+(5006, 'Bharath Khanna', 'Puttur', 0.14),
+(5007, 'Anil Ambani', 'Mangalore', 0.13);
+
+SELECT * FROM salesman;
+
+CREATE TABLE customer(
+    Customer_ID INTEGER PRIMARY KEY,
+    Customer_Name CHAR(20) NOT NULL,
+    City CHAR(10),
+    Grade INTEGER,
+    Salesman_ID INTEGER,
+
+    CONSTRAINT salesman_id_customer_fk FOREIGN KEY(Salesman_ID)
+    REFERENCES salesman(Salesman_ID) ON DELETE CASCADE
+);
+
+INSERT INTO customer VALUES
+(3001, 'Raksha Sharma', 'Ladakh', NULL, 5005),
+(3002, 'Nikhil Rao', 'Bangalore', 100, 5001),
+(3003, 'John Cena', 'Mumbai', 200, 5007),
+(3004, 'Nithesh Bhat', 'Puttur', 300, 5006),
+(3005, 'Adarsh Shet', 'Calicut', 200, 5002),
+(3006, 'Rakesh Chawla', 'Chennai', NULL, 5000),
+(3007, 'Amar Deep', 'Bangalore', 200, 5001),
+(3008, 'Yashas Bachan', 'Ladakh', 300, 5002),
+(3009, 'Shreya Rao', 'Mysore', 100, 5003);
+
+SELECT * FROM customer;
+
+CREATE TABLE orders(
+    Order_No INTEGER PRIMARY KEY,
+    Purchase_Amt DECIMAL(10,4),
+    Order_Date DATE NOT NULL,
+    Salesman_ID INTEGER NOT NULL,
+    Customer_ID INTEGER NOT NULL,
+
+    CONSTRAINT salesmanid_orders_fk FOREIGN KEY(Salesman_ID)
+    REFERENCES salesman(Salesman_ID) ON DELETE CASCADE,
+
+    CONSTRAINT customerid_orders_fk FOREIGN KEY(Customer_ID)
+    REFERENCES customer(Customer_ID) ON DELETE CASCADE
+);
+
+INSERT INTO orders VALUES
+(70001, 350.5000, '2012-10-01', 5002, 3005),
+(70002, 65.2000, '2012-10-01', 5001, 3002),
+(70003, 2400.4000, '2012-10-10', 5003, 3009),
+(70004, 310.5000, '2012-08-17', 5002, 3008),
+(70005, 2400.6000, '2012-07-27', 5001, 3007),
+(70006, 2400.3500, '2012-07-20', 5000, 3006),
+(70007, 5700.5000, '2012-05-10', 5001, 3002),
+(70008, 270.4500, '2012-09-10', 5005, 3001),
+(70010, 3503.4300, '2012-10-10', 5006, 3004),
+(70011, 75.2000, '2012-10-17', 5007, 3003),
+(70012, 250.4300, '2012-06-27', 5002, 3005),
+(70013, 3045.0000, '2012-04-21', 5001, 3007);
+
+SELECT * FROM orders;
+
+SELECT Grade,COUNT(Customer_ID) as Count
+FROM customer
+GROUP BY Grade
+HAVING Grade > (
+    SELECT AVG(Grade) 
+    FROM customer
+    WHERE city = "Bangalore"
+);
+
+SELECT Salesman_ID, Name 
+FROM salesman
+WHERE Salesman_ID IN (
+    SELECT  Salesman_ID
+    FROM customer
+    GROUP BY Salesman_ID
+    HAVING count(Customer_ID) > 1
+);
+
+SELECT 
+SALESMAN.Salesman_id, Name, Customer_Name, Commission 
+FROM 
+SALESMAN, CUSTOMER 
+WHERE 
+SALESMAN.City = CUSTOMER.City 
+UNION 
+SELECT Salesman_id, Name, 'NO MATCH', Commission 
+FROM 
+SALESMAN 
+WHERE 
+NOT City = ANY ( SELECT City 
+FROM CUSTOMER) 
+ORDER BY 2 DESC;
+
+CREATE VIEW HIGHEST_ORDER_SALESMAN
+AS SELECT O.Order_Date, S.Salesman_ID, S.Name
+FROM salesman S, Orders O
+WHERE S.Salesman_ID = O.Salesman_ID
+    AND O.Purchase_Amt = (
+        SELECT MAX(C.Purchase_Amt)
+        FROM orders C
+        WHERE C.Order_Date = O.Order_Date
+);
+SELECT * FROM highest_order_salesman;
+
+DELETE
+FROM salesman
+WHERE Salesman_ID = 5001;
+SELECT * FROM salesman;
