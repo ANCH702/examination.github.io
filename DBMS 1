@@ -1,0 +1,181 @@
+CREATE TABLE publisher(
+    Name VARCHAR(20) PRIMARY KEY, 
+    Address VARCHAR(30), 
+    Phone BIGINT
+);
+
+INSERT INTO publisher VALUES
+('Springer', 'Los Angeles', 1234567890),
+('John', 'Los Santos', 1234567890),
+('Wick', 'Canada', 1234567890),
+('Snow', 'Britain', 1234567890),
+('Casper', 'India', 1234567890),
+('Nolan', 'United States', 1234567890);
+SELECT * from publisher;
+
+CREATE TABLE book(
+    Book_ID INT PRIMARY KEY,
+    Title VARCHAR(20),
+    Publisher_Name VARCHAR(20),
+    Published_Year INT,
+    CONSTRAINT book_publishername_fk FOREIGN KEY(Publisher_Name)
+    REFERENCES publisher(Name)
+);
+
+INSERT INTO book VALUES
+(1, 'Alchemist', 'Springer', 2016),
+(2, 'Game Of Thrones', 'John', 2017),
+(3, 'Baba Yaga', 'Wick', 2018),
+(4, 'Stranger Things', 'Snow', 2017),
+(5, 'Naruto', 'Casper', 2020),
+(6, 'Whiplash', 'Nolan', 2014);
+SELECT * FROM book;
+
+CREATE TABLE book_authors(
+    Book_ID INT,
+    Author_Name VARCHAR(20),
+
+    CONSTRAINT book_author_pk PRIMARY KEY(Book_ID, Author_Name),
+
+    CONSTRAINT book_author_bookid_fk FOREIGN KEY(Book_ID)
+    REFERENCES BOOK(Book_ID) ON DELETE CASCADE
+);
+
+INSERT INTO book_authors VALUES
+(1, 'William'),
+(2, 'Kane'),
+(3, 'Paulo'),
+(4, 'Harry'),
+(5, 'Potter'),
+(6, 'Nolan');
+SELECT * FROM book_authors;
+
+CREATE TABLE library_branch(
+    Branch_ID INT PRIMARY KEY,
+    Branch_Name VARCHAR(20) NOT NULL,
+    Branch_Address VARCHAR(50)
+);
+
+INSERT INTO library_branch VALUES
+(501, 'Mangalagangothri', 'Port Road, Mangalore'),
+(502, 'Central Library', 'Hill Top Road, Mangalore'),
+(503, 'Gandhi Library', 'Lalbagh, Bangalore'),
+(504, 'Dr. Ambedkar Library', 'Kautilya Nagara, Mysore'),
+(505, 'Kuvempu Library', 'Dasara Halli, Hassan'),
+(506, 'Dr. APJ Library', 'Neharu Nagara, Puttur'),
+(507, 'Pampa Library', 'Nethravathi Nagar, Ullal'),
+(508, 'Kumara Vyas Library', 'Brahmavara, Udupi'),
+(509, 'Shivaram Library', 'Belman, Bantwal');
+SELECT * FROM library_branch;
+-- Book_Copies Table:
+
+CREATE TABLE book_copies(
+    Book_ID INT,
+    Branch_ID INT,
+    No_of_Copies INT,
+    PRIMARY KEY(Book_ID, Branch_ID),
+
+    CONSTRAINT book_copies_bookid_fk FOREIGN KEY(Book_ID)
+    REFERENCES book(Book_ID) ON DELETE CASCADE,
+
+    CONSTRAINT book_copies_branchid_fk FOREIGN KEY(Branch_ID)
+    REFERENCES library_branch(Branch_ID) ON DELETE CASCADE
+
+);
+
+INSERT INTO book_copies VALUES
+(1, 501, 79),
+(2, 501, 23),
+(2, 505, 43),
+(2, 507, 9),
+(3, 501, 87),
+(3, 506, 64),
+(4, 502, 65),
+(4, 505, 14),
+(5, 502, 55),
+(5, 503, 24),
+(5, 504, 12),
+(6, 503, 20),
+(6, 504, 15);
+
+SELECT * FROM book_copies;
+
+CREATE TABLE book_lending(
+    Book_ID INT,
+    Branch_ID INT,
+    Card_No INT,
+    Date_Out DATE,
+    Due_Date DATE,
+
+    CONSTRAINT book_lending_pk PRIMARY KEY(Book_ID, Branch_ID, Card_No),
+
+    CONSTRAINT book_lending_book_branchid_fk FOREIGN KEY(Book_ID, Branch_ID)
+    REFERENCES book_copies(Book_ID, Branch_ID) ON DELETE CASCADE 
+);
+
+INSERT INTO book_lending VALUES
+(1, 501, 301, '2017-01-01', '2017-07-23'),
+(1, 501, 302, '2017-01-01', '2017-07-23'),
+(2, 505, 301, '2017-02-10', '2017-07-24'),
+(2, 507, 303, '2017-02-10', '2017-07-24'),
+(2, 505, 302, '2017-01-01', '2017-07-23'),
+(2, 505, 303, '2017-07-03', '2017-07-27'),
+(2, 507, 302, '2017-07-09', '2017-07-27'),
+(3, 501, 303, '2017-02-15', '2017-07-25'),
+(3, 501, 304, '2017-02-15', '2017-07-25'),
+(3, 506, 303, '2017-07-10', '2017-06-30'),
+(4, 502, 305, '2017-01-24', '2017-03-31'),
+(4, 505, 301, '2017-01-01', '2017-07-23'),
+(4, 505, 303, '2017-02-10', '2017-03-24'),
+(4, 505, 304, '2017-05-20', '2017-06-03'),
+(5, 502, 301, '2017-03-21', '2017-06-01'),
+(6, 503, 303, '2017-02-10', '2017-03-24'),
+(6, 504, 303, '2017-02-10', '2017-03-24'),
+(6, 504, 306, '2017-06-12', '2017-09-23');
+SELECT * FROM book_lending;
+
+SELECT B.Book_ID, B.Title, B.Publisher_Name, A.Author_Name, C.No_of_Copies, L.Branch_Name
+FROM book B, book_authors A, book_copies C, library_branch L
+WHERE B.Book_ID = A.Book_ID
+    AND A.Book_ID = C.Book_ID
+    AND C.Branch_ID = L.Branch_ID;
+
+SELECT Card_No AS Card_Number
+FROM book_lending
+WHERE Date_Out BETWEEN '2017-01-01' AND '2017-06-30'
+GROUP BY Card_No
+HAVING COUNT(Book_ID)>3;
+
+DELETE FROM book
+WHERE Book_ID = 6;
+
+CREATE TABLE book_partition(
+    Book_ID INT NOT NULL,
+    Title VARCHAR(20),
+    Publisher_Name VARCHAR(20),
+    Published_Year INT
+)
+PARTITION BY RANGE(Published_Year)(
+    PARTITION q0 VALUES LESS THAN(2017),
+    PARTITION q1 VALUES LESS THAN(2019),
+    PARTITION q2 VALUES LESS THAN(2021)
+);
+
+INSERT INTO book_partition VALUES
+(1, 'Alchemist', 'Springer', 2016),
+(2, 'Game Of Thrones', 'John', 2017),
+(3, 'Baba Yaga', 'Wick', 2018),
+(4, 'Stranger Things', 'Snow', 2017),
+(5, 'Naruto', 'Casper', 2020);
+SELECT * FROM book_partition PARTITION(q0);
+SELECT * FROM book_partition PARTITION(q1);
+SELECT * FROM book_partition PARTITION(q2);
+
+CREATE VIEW book_copies_view
+AS SELECT B.Title, C.Branch_ID, C.No_of_Copies
+FROM book B, book_copies C
+WHERE B.Book_ID = C.Book_ID;
+
+SELECT * FROM book_copies_view;
+
+
