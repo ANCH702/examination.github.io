@@ -1,0 +1,404 @@
+7
+using System;
+using System.IO;
+
+class Program7
+{
+    public static void Main(string[] args)
+    {
+      
+        string Filename1 = @"D:\final_report_merged.txt"; 
+        string Filename2 = @"D:\internship_report.txt";   
+
+        
+        string str = "develop a C# program to copy another file";
+        File.WriteAllText(Filename1, str);
+
+        
+        Console.WriteLine("Content of " + Filename1 + ":");
+        Console.WriteLine(File.ReadAllText(Filename1));
+
+       
+        string[] str2 = { "abc", "123", "345" };
+        using (StreamWriter w = new StreamWriter(Filename1))
+        {
+            foreach (string l in str2) 
+            {
+                w.WriteLine(l);
+            }
+        }
+
+     
+        Console.WriteLine("\nUpdated content of " + Filename1 + ":");
+        Console.WriteLine(File.ReadAllText(Filename1));
+
+      
+        File.Copy(Filename1, Filename2, true);
+
+       
+        Console.WriteLine("\nContent of " + Filename2 + ":");
+        Console.WriteLine(File.ReadAllText(Filename2));
+    }
+}
+
+
+8
+using System;
+
+class Stack{
+    private int _top;
+    private int[] items;
+    private int max_size;
+
+    public Stack(int size){
+        max_size = size;
+        items = new int[size];
+        _top = -1;
+    }
+
+    public void display(){
+        if(!isEmpty()){
+            Console.WriteLine("The Stack Elements are: ");
+            for(int i = top; i >= 0; i--){
+                Console.WriteLine(items[i]);
+            }
+        }
+    }
+
+    public void peek(){
+        if(!isEmpty()){
+            Console.WriteLine("The top element of the Stack is {0}.", items[top]);
+        }
+    }
+
+    public void push(int item){
+        if(!isFull()){
+            items[++_top] = item;
+            Console.WriteLine("{0} added to the Stack!", item);
+            return;
+        }
+    }
+
+    public int pop(){
+        if(!isEmpty()){
+            return items[_top--];
+        }
+        return -1;
+    }
+
+    public bool isFull(){
+        if(this.top == max_size-1){
+            Console.WriteLine("Stack is Full!");
+            return true;
+        }
+        return false;
+    }
+
+    public bool isEmpty(){
+        if(top == -1){
+            Console.WriteLine("Stack is Empty!");
+            return true;
+        }
+        return false;
+    }
+
+    public int top{
+        get{
+            return _top;
+        }
+    }
+}
+
+class Program7{
+    static void Main(string[] args){
+        Console.Write("Enter the max size of the stack: ");
+        int size = int.Parse(Console.ReadLine());
+
+        Stack stack = new Stack(size);
+
+        while(true){
+            Console.WriteLine("""
+            ---MENU---
+            1. Push an item
+            2. Pop an item
+            3. Peek top item
+            4. Display stack
+            5. Exit
+
+            Enter an option:
+            """);
+            int choice = int.Parse(Console.ReadLine());
+
+            switch(choice){
+                case 1:
+                    Console.Write("Enter an element to push to stack: ");
+                    stack.push(int.Parse(Console.ReadLine()));
+                    break;
+                case 2:
+                    Console.WriteLine("The popped element is {0}.", stack.pop());
+                    break;
+                case 3:
+                    stack.peek();
+                    break;
+                case 4:
+                    stack.display();
+                    break;
+                case 5:
+                    Console.WriteLine("Program Halted Successfully!");
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Enter a valid option!");
+                    break;
+            }
+        }
+    }
+}
+
+
+9
+using System;
+using System.Numerics;
+
+public class Complex
+{
+    public int real;
+    public int img;
+
+    public Complex()
+    {
+    }
+    public Complex(int real1, int img1)
+    {
+        real = real1;
+        img = img1;
+    }
+    public static Complex operator +(Complex c1, Complex c2)
+    {
+        Complex c = new Complex();
+        c.real = c1.real + c2.real;
+        c.img = c1.img + c2.img;
+        return c;
+    }
+}
+public class Program9
+{
+    public static void Main(string[] args)
+    {
+        Complex c1 = new Complex(4, 10);
+        Complex c2 = new Complex(10, 4);
+        Complex c3 = c1 + c2;
+        
+
+        Console.WriteLine("First complex number is {0}+{1}i", c1.real, c1.img);
+        Console.WriteLine("Second complex number is {0}+{1}i", c2.real, c2.img);
+        Console.WriteLine("Resultant complex number is {0}+{1}i", c3.real, c3.img);
+    }
+}
+
+
+10
+using System;
+
+class Shape
+{
+    public virtual void Draw()
+    {
+        Console.WriteLine("Draw");
+    }
+
+    public virtual void Erase()
+    {
+        Console.WriteLine("Erase");
+    }
+}
+
+class Circle : Shape
+{
+    public override void Draw()
+    {
+        Console.WriteLine("Draw circle");
+    }
+
+    public override void Erase()
+    {
+        Console.WriteLine("Erase circle");
+    }
+}
+
+class Triangle : Shape
+{
+    public override void Draw()
+    {
+        Console.WriteLine("Draw triangle");
+    }
+
+    public override void Erase()
+    {
+        Console.WriteLine("Erase triangle");
+    }
+}
+
+class Square : Shape
+{
+    public override void Draw()
+    {
+        Console.WriteLine("Draw square");
+    }
+
+    public override void Erase()
+    {
+        Console.WriteLine("Erase square");
+    }
+}
+
+public class Class10
+{
+    public static void Main(string[] args)
+    {
+        Shape s = new Shape();
+        Circle c = new Circle();
+        Triangle t = new Triangle();
+        Square sq = new Square();
+        
+        Shape s1;
+
+        s1 = s;
+        s1.Draw();
+        s1.Erase();
+
+        s1 = c;
+        s1.Draw();
+        s1.Erase();
+
+        s1 = t;
+        s1.Draw();
+        s1.Erase();
+
+        s1 = sq;
+        s1.Draw();
+        s1.Erase();
+    }
+}
+
+
+11
+
+abstract class Shape{
+    public abstract double calculateArea();
+    public abstract double calculatePerimeter();
+}
+
+class Circle: Shape{
+    private double radius;
+
+    public Circle(double r){
+        radius = r;
+    }
+
+    public override double calculateArea(){
+        return Math.PI * radius * radius;
+    }
+
+    public override double calculatePerimeter(){
+        return 2 * Math.PI * radius;
+    }
+}
+
+class Triangle: Shape{
+    private double a;
+    private double b;
+    private double c;
+    private double h;
+
+    public Triangle(double a, double b, double c, double h){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.h = h;
+    }
+
+    public override double calculateArea(){
+        return 0.5 * b * h;
+    }
+
+    public override double calculatePerimeter(){
+        return a + b + c;
+    }
+}
+
+class Program11{
+    public static void Main(string[] args){
+        Console.WriteLine("Enter the radius of the circle: ");
+        double radius = double.Parse(Console.ReadLine());
+
+        Shape circle = new Circle(radius);
+        Console.WriteLine("Area of the circle: {0}\nPerimeter of the circle: {1}", circle.calculateArea(), circle.calculatePerimeter());
+
+        Console.WriteLine("\nEnter the length of the side A of triangle: ");
+        double a = double.Parse(Console.ReadLine());
+
+        Console.WriteLine("\nEnter the length of the side B of triangle: ");
+        double b = double.Parse(Console.ReadLine());
+
+        Console.WriteLine("\nEnter the length of the side C of triangle: ");
+        double c = double.Parse(Console.ReadLine());
+
+        Console.WriteLine("\nEnter the height of triangle: ");
+        double h = double.Parse(Console.ReadLine());
+
+        Shape triangle = new Triangle(a, b, c, h);
+        Console.WriteLine("Area of the triangle: {0}\nPerimeter of the triangle: {1}", triangle.calculateArea(), triangle.calculatePerimeter());
+
+    }
+}
+
+
+12
+public interface Resizable{
+    public void resizeWidth(int width);
+    public void resizeHeight(int height);
+}
+
+class Rectangle: Resizable{
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height){
+        this.width = width;
+        this.height = height;
+    }
+    
+    public void resizeWidth(int width){
+        this.width = width;
+    }
+    
+    public void resizeHeight(int height){
+        this.height = height;
+    }
+
+    public void display(){
+        Console.WriteLine("Width: {0}\nHeight: {1}", width, height);
+    }
+}
+
+class Program12{
+    public static void Main(string[] args){
+        Console.Write("Enter the width of the rectangle: ");
+        int width = int.Parse(Console.ReadLine());
+
+        Console.Write("Enter the height of the rectangle: ");
+        int height = int.Parse(Console.ReadLine());
+
+        Rectangle r = new Rectangle(width, height);
+        r.display();
+
+        Console.Write("Enter the resized width of the rectangle: ");
+        r.resizeWidth(int.Parse(Console.ReadLine()));
+
+        Console.Write("Enter the resized height of the rectangle: ");
+        r.resizeHeight(int.Parse(Console.ReadLine()));
+
+        r.display();
+    }
+}
