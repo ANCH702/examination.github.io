@@ -1,0 +1,270 @@
+1
+
+Public class StaffMember{
+Public string Name { get; set; }
+Public int Age { get; set; }
+Public decimal Salary { get; set; }
+Public StaffMember(string name, int age, decimal salary)
+{
+Name = name;
+Age = age;
+Salary = salary;
+}
+Public virtual void DisplayDetails()
+{
+Console.WriteLine($”Name: {Name}”);
+Console.WriteLine($”Age: {Age}”);
+Console.WriteLine($”Salary: ${Salary:F2}”);
+}
+}
+Public class Teacher : StaffMember
+{
+Public string Subject { get; set; }
+Public Teacher(string name, int age, decimal salary, string subject) : base(name, age, salary)
+{
+Subject = subject;
+}
+2
+Public override void DisplayDetails()
+{
+Base.DisplayDetails();
+Console.WriteLine($”Subject: {Subject}”);
+}
+}
+Public class AdministrativeStaff : StaffMember
+{
+Public string Department { get; set; }
+Public AdministrativeStaff(string name, int age, decimal salary, string department) : base(name, age, salary)
+{
+Department = department;
+}
+Public override void DisplayDetails()
+{
+Base.DisplayDetails();
+Console.WriteLine($”Department: {Department}”);
+}
+}
+Public class StaffManagementSystem
+{
+Public static void Main(string[] args)
+{
+List<StaffMember> staffList = new List<StaffMember>();
+staffList.Add(new Teacher(“John Doe”, 40, 50000, “Math”));
+staffList.Add(new Teacher(“Jane Smith”, 35, 45000, “English”));
+staffList.Add(new AdministrativeStaff(“Mike Brown”, 42, 35000, “Finance”));
+staffList.Add(new AdministrativeStaff(“Alice Lee”, 38, 38000, “Admissions”));
+Console.WriteLine(“**Staff Details**”);
+Foreach (StaffMember staff in staffList)
+{
+Staff.DisplayDetails();
+Console.WriteLine();
+}
+Decimal totalSalary = staffList.Sum(staff => staff.Salary);
+Console.WriteLine($”Total Salary Expenditure: ${totalSalary:F2}”);
+}
+}
+
+2
+
+using System;
+public class BankAccount
+{
+public string AccountNumber { get; set; }
+public decimal Balance { get; private set; }
+public string OwnerName { get; set; }
+public BankAccount(string accountNumber, decimal balance, string ownerName)
+{
+AccountNumber = accountNumber;
+Balance = ValidateBalance(balance);
+OwnerName = ownerName;
+}
+private decimal ValidateBalance(decimal balance)
+{
+if (balance < 0)
+{
+throw new ArgumentOutOfRangeException(nameof(balance), "Balance cannot be negative");
+}
+return balance;
+}
+public virtual void Deposit(decimal amount)
+{
+Balance += ValidateAmount(amount);
+}
+public virtual void Withdraw(decimal amount)
+{
+Balance -= ValidateAmount(amount);
+}
+protected decimal ValidateAmount(decimal amount)
+{
+if (amount <= 0)
+{
+throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be positive");
+}
+return amount;
+}
+public virtual void DisplayDetails()
+{
+Console.WriteLine($"Account Number: {AccountNumber}");
+Console.WriteLine($"Balance: {Balance:C}");
+Console.WriteLine($"Owner Name: {OwnerName}");
+}
+}
+public class SavingsAccount : BankAccount
+{
+public decimal InterestRate { get; set; }
+public SavingsAccount(string accountNumber, decimal balance, string ownerName, decimal interestRate)
+: base(accountNumber, balance, ownerName)
+{
+InterestRate = interestRate;
+}
+public override void DisplayDetails()
+{
+base.DisplayDetails();
+Console.WriteLine($"Interest Rate: {InterestRate:P}");
+}
+}
+public class CheckingAccount : BankAccount
+{
+public decimal OverdraftLimit { get; set; }
+public CheckingAccount(string accountNumber, decimal balance, string ownerName, decimal overdraftLimit)
+: base(accountNumber, balance, ownerName)
+{
+OverdraftLimit = overdraftLimit;
+}
+public override void Withdraw(decimal amount)
+{
+if (Balance - amount < -OverdraftLimit)
+{
+throw new InvalidOperationException("Insufficient funds. Withdrawal exceeds overdraft limit.");
+}
+base.Withdraw(amount);
+}
+public override void DisplayDetails()
+{
+base.DisplayDetails();
+Console.WriteLine($"Overdraft Limit: {OverdraftLimit:C}");
+}
+}
+public class BankSystem
+{
+private List<BankAccount> accounts = new List<BankAccount>();
+public void CreateSavingsAccount(string accountNumber, decimal balance, string ownerName, decimal interestRate)
+{
+accounts.Add(new SavingsAccount(accountNumber, balance, ownerName, interestRate));
+}
+public void CreateCheckingAccount(string accountNumber, decimal balance, string ownerName, decimal overdraftLimit)
+{
+accounts.Add(new CheckingAccount(accountNumber, balance, ownerName, overdraftLimit));
+}
+public decimal GetTotalBalance()
+{
+return accounts.Sum(account => account.Balance);
+}
+public void DisplayAllAccounts()
+{
+foreach (var account in accounts)
+{
+account.DisplayDetails();
+Console.WriteLine("--------------------");
+}
+}
+}
+public class Program
+{
+public static void Main(string[] args)
+{
+BankSystem bank = new BankSystem();
+bank.CreateSavingsAccount("SAV1234", 1000, "John Doe", 0.02m);
+bank.CreateCheckingAccount("CHK5678", 500, "Jane Smith", 200);
+bank.DisplayAllAccounts();
+Console.WriteLine("Total Balance: {0:C}", bank.GetTotalBalance());
+}
+}
+
+3
+
+public class Product
+{
+public string Name { get; set; }
+public double Price { get; set; }
+public int Quantity { get; set; }
+public Product(string name, double price, int quantity)
+{
+Name = name;
+Price = price;
+Quantity = quantity;
+}
+public virtual string GetDetails() // Virtual method for specific details in derived classes
+{
+return $"Name: {Name}, Price: ${Price}, Quantity: {Quantity}";
+}
+}
+{
+public string Brand { get; set; }
+public Electronics(string name, double price, int quantity, string brand) : base(name, price, quantity){
+Brand = brand;
+}
+public override string GetDetails(){
+return base.GetDetails() + $", Brand: {Brand}";
+}
+}
+public class Clothing : Product{
+public string Size { get; set; }
+public Clothing(string name, double price, int quantity, string size) : base(name, price, quantity){
+Size = size;
+}
+public override string GetDetails(){
+return base.GetDetails() + $", Size: {Size}";
+}
+}
+public class Book : Product{
+public string Author { get; set; }
+public Book(string name, double price, int quantity, string author) : base(name, price, quantity){
+Author = author;
+}
+public override string GetDetails(){
+return base.GetDetails() + $", Author: {Author}";
+}
+}
+public class ShoppingCart{
+private List<Product> items = new List<Product>();
+public void AddProduct(Product product){
+items.Add(product);
+}
+public List<string> GetCartDetails(){
+List<string> details = new List<string>();
+foreach (Product item in items)
+{
+details.Add(item.GetDetails());
+}
+return details;
+}
+public double GetTotalCost()
+{
+double totalCost = 0;
+foreach (Product item in items)
+{
+totalCost += item.Price * item.Quantity;
+}
+return totalCost;
+}
+}
+public class Program
+{
+public static void Main(string[] args)
+{
+Electronics tv = new Electronics("TV", 500.00, 1, "Samsung");
+Clothing shirt = new Clothing("Shirt", 20.00, 2, "Medium");
+Book book = new Book("The Hitchhiker's Guide to the Galaxy", 10.00, 1, "Douglas Adams");
+ShoppingCart cart = new ShoppingCart();
+cart.AddProduct(tv);
+cart.AddProduct(shirt);
+cart.AddProduct(book);
+Console.WriteLine("Shopping Cart Items:");
+foreach (string detail in cart.GetCartDetails())
+{
+Console.WriteLine(detail);
+}
+Console.WriteLine($"Total Cost: ${cart.GetTotalCost():F2}");
+}
+}
