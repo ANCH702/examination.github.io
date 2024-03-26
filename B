@@ -194,7 +194,7 @@ Name = name;
 Price = price;
 Quantity = quantity;
 }
-public virtual string GetDetails() // Virtual method for specific details in derived classes
+public virtual string GetDetails() 
 {
 return $"Name: {Name}, Price: ${Price}, Quantity: {Quantity}";
 }
